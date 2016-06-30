@@ -62,18 +62,23 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% Calculate the J
+X = [ ones(m, 1) X ];
 
+% Calculate the hypothesis
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+a2 = [ ones(m, 1) a2 ];
+z3 = a2 * Theta2';
+h = sigmoid(z3);
 
+for k = 1:num_labels
+	yk = (y == k);
+	hk = h(:, k);
+	J = J + sum((-yk) .* log(hk) - ((1-yk) .* log(1 - hk))) / m;
+end
 
-
-
-
-
-
-
-
-
-
+J = J + ((sum(sum(Theta1(:, 2:end) .^ 2, 2)) + sum(sum(Theta2(:, 2:end) .^ 2, 2))) * lambda / 2 / m);
 
 
 
