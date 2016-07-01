@@ -62,7 +62,6 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-% Calculate the J
 X = [ ones(m, 1) X ];
 
 % Calculate the hypothesis
@@ -72,19 +71,41 @@ a2 = [ ones(m, 1) a2 ];
 z3 = a2 * Theta2';
 h = sigmoid(z3);
 
+% Calculate the J unregularize
 for k = 1:num_labels
 	yk = (y == k);
 	hk = h(:, k);
 	J = J + sum((-yk) .* log(hk) - ((1-yk) .* log(1 - hk))) / m;
 end
 
+% Regularize J
 J = J + ((sum(sum(Theta1(:, 2:end) .^ 2, 2)) + sum(sum(Theta2(:, 2:end) .^ 2, 2))) * lambda / 2 / m);
 
+% Calculate the gradient
+num_values = 1:num_labels;
 
+%delta1_accum = zeros(size(Theta1_grad));
+%delta2_accum = zeros(size(Theta2_grad));
 
+for t = 1:1
+	% Calculate delta_3
+	y_k = (num_values == y(t,1));
+	delta_3 = (h(t, :) - y_k)';
+	% Calculate delta_2
+	delta_2 = Theta2' * delta_3;
+	delta_2 = delta_2(2:end,:);
+	delta_2 = delta_2 .* (sigmoidGradient(z2(t,:)))';
+	
+	size(delta_2)
+	size(X)
+	
+	%Calculate delta
+	delta1_accum = [delta1_accum; delta_2 * X(t, :)];
+	delta2_accum = [delta2_accum; delta_3 * ; 
+end
 
-
-
+size(Theta1_grad)
+size(Theta2_grad)
 % -------------------------------------------------------------
 
 % =========================================================================
