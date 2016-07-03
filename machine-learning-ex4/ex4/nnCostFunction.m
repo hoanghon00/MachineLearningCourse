@@ -84,10 +84,10 @@ J = J + ((sum(sum(Theta1(:, 2:end) .^ 2, 2)) + sum(sum(Theta2(:, 2:end) .^ 2, 2)
 % Calculate the gradient
 num_values = 1:num_labels;
 
-%delta1_accum = zeros(size(Theta1_grad));
-%delta2_accum = zeros(size(Theta2_grad));
+delta1_accum = zeros(size(Theta1_grad));
+delta2_accum = zeros(size(Theta2_grad));
 
-for t = 1:1
+for t = 1:m
 	% Calculate delta_3
 	y_k = (num_values == y(t,1));
 	delta_3 = (h(t, :) - y_k)';
@@ -96,16 +96,19 @@ for t = 1:1
 	delta_2 = delta_2(2:end,:);
 	delta_2 = delta_2 .* (sigmoidGradient(z2(t,:)))';
 	
-	size(delta_2)
-	size(X)
-	
-	%Calculate delta
-	delta1_accum = [delta1_accum; delta_2 * X(t, :)];
-	delta2_accum = [delta2_accum; delta_3 * ; 
+	%Calculate delta accumulate
+  delta2_accum = delta2_accum + delta_3 * a2(t, :);
+	delta1_accum = delta1_accum + delta_2 * X(t, :); 
 end
 
-size(Theta1_grad)
-size(Theta2_grad)
+Theta2_grad_unregularized = delta2_accum / m;
+Theta1_grad_unregularized = delta1_accum / m;
+
+% Regularized the gradient
+Theta1_grad = Theta1_grad_unregularized + (Theta1 * lambda / m);
+Theta1_grad(:, 1) = Theta1_grad_unregularized(:, 1);
+Theta2_grad = Theta2_grad_unregularized + (Theta2 * lambda / m);
+Theta2_grad(:, 1) = Theta2_grad_unregularized(:, 1);
 % -------------------------------------------------------------
 
 % =========================================================================
