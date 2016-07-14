@@ -20,13 +20,19 @@ idx = zeros(size(X,1), 1);
 %
 % Note: You can use a for-loop over the examples to compute this.
 %
-
-
-
-
-
-
-
+for i = 1:size(X,1)
+	% Init the current item to first centroid and calculate the length
+	idx(i,1) = 1;
+	len_to_centroid = sum((X(i,:) - centroids(1,:)) .^ 2);
+	% Iterate for all remain centroids to find the minimize length
+	for j = 2:K
+		cur_len = sum((X(i,:) - centroids(j,:)) .^ 2);
+		if (cur_len < len_to_centroid) 
+			len_to_centroid = cur_len;
+			idx(i) = j;
+		end
+	end
+end
 % =============================================================
 
 end
