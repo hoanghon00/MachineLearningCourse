@@ -40,21 +40,31 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
+% Calculate cost function J
+error = (X * Theta') - Y;
+J = sum(sum((error .^ 2) .* R)) / 2; 
 
+% Calculate X grad
+for i=1:num_movies
+	idx = find(R(i,:)==1);
+	Theta_tmp = Theta(idx,:);
+	Y_tmp = Y(i,idx);
+	X_grad(i,:) = (X(i,:) * Theta_tmp' - Y_tmp) * Theta_tmp;
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+% Calculate Theta grad
+for j=1:num_users
+	for k=1:num_features
+		for i=1:num_movies
+			if(R(i,j) == 1)
+				Theta_grad(j,k) = Theta_grad(j,k) + error(i,j) * X(i, k);
+			end
+		end
+	end
+end
+for j=1:num_users
+	
+end
 % =============================================================
 
 grad = [X_grad(:); Theta_grad(:)];
