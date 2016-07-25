@@ -54,17 +54,19 @@ end
 
 % Calculate Theta grad
 for j=1:num_users
-	for k=1:num_features
-		for i=1:num_movies
-			if(R(i,j) == 1)
-				Theta_grad(j,k) = Theta_grad(j,k) + error(i,j) * X(i, k);
-			end
-		end
-	end
+	idx = find(R(:,j)==1);
+	X_tmp = X(idx,:);
+	Y_tmp = Y(idx,j);
+	Theta_grad(j,:) = (X_tmp * Theta(j,:)' - Y_tmp)' * X_tmp;
 end
-for j=1:num_users
-	
-end
+
+% Regularized the cost 
+J = J + (sum(sum(Theta .^ 2)) * lambda / 2) + (sum(sum(X .^ 2)) * lambda / 2);
+
+% Regularized the gradient
+X_grad = X_grad + lambda * X;
+Theta_grad = Theta_grad + lambda * Theta;
+
 % =============================================================
 
 grad = [X_grad(:); Theta_grad(:)];
